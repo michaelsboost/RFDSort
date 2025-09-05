@@ -3,3 +3,6 @@
   
 @tailwind components;
 @tailwind utilities;
+.grid-odd-span > :last-child:nth-child(odd) {
+  grid-column: 1 / -1; /* span both columns when total count is odd */
+}
