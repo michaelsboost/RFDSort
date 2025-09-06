@@ -29,10 +29,10 @@
     <div class="absolute inset-0" x-data="App()">
       <div class="flex absolute inset-0">
         <!-- Sidebar (Belts) -->
-        <aside class="p-2 w-36 text-white grid grid-cols-2 gap-2 overflow-y-auto">
+        <aside class="w-28 text-white flex flex-col items-center py-2 space-y-2 overflow-y-auto">
           <template x-for="belt in belts" :key="belt.chute">
             <button @click="showBelt(belt.chute)" :title="belt.chute" :class="[
-                'flex items-center border-0 justify-center rounded outline-none cursor-pointer',
+                'w-20 h-10 flex items-center border-0 justify-center rounded outline-none cursor-pointer shadow-2xl shadow-blue-500',
                 isHighlighted(belt.chute) ? 'ring-4 ring-white' : '',
                 belt.color
               ]">
@@ -230,7 +230,7 @@
         </article>
       </dialog>
     </div>
-    
+
     <script>
       function App() {
         return {
@@ -241,12 +241,12 @@
           url: 'https://github.com/michaelsboost/RFDSort/',
           license: 'https://github.com/michaelsboost/RFDSort/blob/main/LICENSE',
           logo: 'https://michaelsboost.com/RFDSort/imgs/logo.svg',
-      
+
           // --- Shifts/Sorts ---
           shiftOrder: ['sunrise','day','twilight','night'],
           shift: 'night',
           labelForShift(s){ return ({sunrise:'Sunrise', day:'Day', twilight:'Twilight', night:'Night'})[s] || s; },
-      
+
           // Sidebar belts (short labels + colors)
           belts: [
             {chute:'Blue Yellow', short:'B-Y', color:'bg-blue-600'},
@@ -278,7 +278,7 @@
             {chute:'PD-2',        short:'PD2',  color:'bg-gray-400 text-black'},
             {chute:'PD-3',        short:'PD3',  color:'bg-gray-500'},
           ],
-      
+
           // --- RULES BY SHIFT ---
           rulesByShift: {
             sunrise: [
@@ -296,7 +296,7 @@
               {state:'OK', zips:['735','750-758','760-767'], chute:['Blue Yellow','Blue Black'], dest:'DFW', pull:'225/245', wave:'2nd'},
               {state:'CA', zips:['900-928'], chute:'Blue Blue', dest:'ONT', pull:'201/221', wave:'1st'},
               {state:'CA', zips:['900-928'], chute:'White Brown', dest:'ONT', pull:'201/221', wave:'1st'},
-      
+
               {state:'MI', zips:['484-499'], chute:'Blue Orange', dest:'LAN', pull:'227/247', wave:'2nd'},
               {state:'MI', zips:['480-483'], chute:'Blue Green', dest:'DTW', pull:'235/255', wave:'2nd'},
               {state:'OR', zips:['970-979'], chute:'Blue Red', dest:'PDX', pull:'153/213', wave:'1st'},
@@ -329,7 +329,7 @@
               {state:'NE', zips:['680-688'], chute:'White White', dest:'CID/OMA', pull:'242/248/256', wave:'1st'},
               {state:'OH', zips:['434','438-449'], chute:'White Blue', dest:'CLE', pull:'224/244', wave:'2nd'},
               {state:'WA', zips:['980-985'], chute:'Orange', dest:'BFI', pull:'151/211', wave:'1st'},
-      
+
               {state:'IA', zips:['527-528'], chute:'Green Runout', dest:'PD Wall'},
               {state:'IL', zips:['601-603','605','610','612-617'], chute:'Green Runout', dest:'PD Wall'},
               {state:'IL', zips:['601','604-606','608-609'], chute:'PD-1', dest:'PD Wall'},
@@ -338,7 +338,7 @@
               {state:'IL', zips:['60546','606-607','610-611'], chute:'PD-3', dest:'PD Wall'},
             ]
           },
-      
+
           // Derived (current view)
           rules: [],
           states: [],
@@ -348,15 +348,15 @@
           beltMatches: [],
           highlightedSet: new Set(),
           byChute: new Map(),
-      
+
           // THEME
           theme: localStorage.getItem('theme') || 'dark',
-      
+
           // --- Lifecycle ---
           init() {
             this.applyShift();
             this.applyTheme();
-      
+
             // keep theme persisted whenever it changes (covers selects etc.)
             this.$watch('theme', (t) => {
               localStorage.setItem('theme', t);
@@ -369,42 +369,42 @@
               if (this.theme === 'auto') this.applyTheme();
             });
           },
-      
+
           applyTheme() {
             const html = document.documentElement; // <html>
             let color;
             let value = this.theme;
-      
+
             if (value === 'auto') {
               value = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             }
-      
+
             if (value === 'dark') {
               color = '#13171f'; // navbar dark color
             } else {
               color = 'hsl(205deg 18.75% 87.45%)'; // navbar light color
             }
-      
+
             html.setAttribute('data-theme', value);
             document.querySelector('meta[name=theme-color]').setAttribute('content', color);
             document.querySelector('meta[name=msapplication-navbutton-color]').setAttribute('content', color);
           },
-      
+
           toggleTheme() {
             // If on 'auto', flip to the resolved mode first, then toggle.
             const resolved = (this.theme === 'auto')
               ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
               : this.theme;
-      
+
             this.theme = (resolved === 'dark') ? 'light' : 'dark';
             // applyTheme is called via $watch, but calling here is fine too:
             this.applyTheme();
           },
-      
+
           // --- Helpers ---
           asArray(v){ return Array.isArray(v) ? v : [v]; },
           isHighlighted(chute){ return this.highlightedSet.has(chute); },
-      
+
           // --- Shift handling ---
           setShift(s){
             if (this.shift === s) return;
@@ -418,13 +418,13 @@
             this.matches = [];
             this.beltMatches = [];
             this.highlightedSet = new Set();
-      
+
             // load rules for current shift
             this.rules = this.rulesByShift[this.shift] || [];
-      
+
             // unique states
             this.states = [...new Set(this.rules.map(r => r.state))].sort();
-      
+
             // reverse index: chute -> list of rules
             this.byChute = new Map();
             this.rules.forEach((r, i) => {
@@ -434,7 +434,7 @@
               });
             });
           },
-      
+
           // --- Actions ---
           showState(code){
             this.selectedBelt = null;
@@ -442,18 +442,18 @@
             this.matches = this.rules
               .filter(r => r.state === code)
               .map((r,i) => ({...r, _key: `state:${this.shift}:${code}:${i}:${(r.dest||'')}:${this.asArray(r.chute).join('|')}`}));
-      
+
             this.highlightedSet = new Set();
             this.matches.forEach(m => this.asArray(m.chute).forEach(c => this.highlightedSet.add(c)));
           },
-      
+
           showBelt(chuteName){
             this.selectedState = null;
             this.selectedBelt = chuteName;
             this.beltMatches = this.byChute.get(chuteName) || [];
             this.highlightedSet = new Set([chuteName]);
           },
-      
+
           clear(){
             this.selectedState = null;
             this.selectedBelt  = null;
@@ -464,6 +464,7 @@
         }
       }
     </script>
+
     <script src="https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js"></script>
     <script>
       if ('serviceWorker' in navigator) {

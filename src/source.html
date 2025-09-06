@@ -1,13 +1,13 @@
 <div class="absolute inset-0" x-data="App()">
   <div class="flex absolute inset-0">
     <!-- Sidebar (Belts) -->
-    <aside class="w-28 text-white flex flex-col items-center py-2 space-y-2 overflow-y-auto">
+    <aside class="p-2 w-36 text-white grid grid-cols-2 gap-2 overflow-y-auto">
       <template x-for="belt in belts" :key="belt.chute">
         <button
           @click="showBelt(belt.chute)"
           :title="belt.chute"
           :class="[
-            'w-20 h-10 flex items-center border-0 justify-center rounded outline-none cursor-pointer shadow-2xl shadow-blue-500',
+            'flex items-center border-0 justify-center rounded outline-none cursor-pointer',
             isHighlighted(belt.chute) ? 'ring-4 ring-white' : '',
             belt.color
           ]">
